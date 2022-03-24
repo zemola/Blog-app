@@ -76,7 +76,7 @@ $ bundle exec rspec
 
 ## Author
 
-👤 **Roland N. Mweze**
+👤 **Olatunji Azeem**
 
 - [Github](https://github.com/zemola)
 - [Twitter](https://github.com/zemolat)
