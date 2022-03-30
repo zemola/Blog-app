@@ -1,2 +1,30 @@
-<h1>Users#show</h1>
-<p>Find me in app/views/users/show.html.erb</p>
+<div class="user-container">
+  <div class="user-img">
+    <%= image_tag("Tom.png", width:'150px', height:'170px') %>
+  </div>
+  <div class="user-data">
+    <h2><%= @user.name%></h2>
+    <p>Number of posts: <%= @user.post_ids.count %></p>
+  </div>
+</div>
+
+<div class="user-container-2">
+  <div class="user-data-2">
+    <h2>Bio</h2>
+    <p class="bio"><%= @user.bio%></p>
+  </div>
+</div>
+
+<% @user.recent_posts.each do |post| %>
+  <div class="comment-container">
+      <h2># Post : <%= post.title%></h2>
+      <p><%= post.text%></p>
+      <h3>Comment <%= post.author.comment_ids.count%>,  <span>Likes <%= post.likes_counter%></span></h3>
+  </div>
+<%end%>
+
+<div class="button-div">
+  <button class="button">
+      <%= link_to "See all posts", user_posts_path(@user), {:class => "button_class"} %>
+  </button>
+</div>
