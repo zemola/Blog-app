@@ -12,7 +12,7 @@ Rails.application.routes.draw do
 
   resources :posts do
     resources :comments, only: %i[create new]
-    resources :likes, only: [:create]
+    resources :likes, only: [create]
   end
 
   # Defines the root path route ("/")
