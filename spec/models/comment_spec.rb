@@ -16,5 +16,4 @@ RSpec.describe Comment, type: :model do
     subject.comments.new(author: @user, post: subject)
     expect(subject.comments_counter).to eql 1
   end
-
 end
