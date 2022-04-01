@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-  def current_user
+  def self.current_user
     User.first
   end
 end
