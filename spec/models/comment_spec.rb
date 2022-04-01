@@ -11,4 +11,10 @@ RSpec.describe Comment, type: :model do
   it 'should return the right comments' do
     expect(subject.text).to eq 'Hello'
   end
+
+  it 'should return the number of comments' do
+    subject.comments.new(author: @user, post: subject)
+    expect(subject.comments_counter).to eql 1
+  end
+
 end
