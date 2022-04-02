@@ -11,5 +11,4 @@ RSpec.describe Comment, type: :model do
   it 'should return the right comments' do
     expect(subject.text).to eq 'Hello'
   end
-  
 end
