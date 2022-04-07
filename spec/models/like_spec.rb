@@ -1,19 +1,20 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe Like, type: :model do
-  describe 'Validations' do
-    subject { Like.new(author_id: 6, post_id: 1) }
+  it 'tests that Like model is created correctly' do
+    like = Like.new
+    like.build_author(name: 'Ranjeet')
+    like.build_post(text: '')
+    expect(like).to be_valid
+  end
 
-    before { subject.save }
-
-    it 'author id should be an integer' do
-      subject.author_id = 'a'
-      expect(subject).to_not be_valid
-    end
-
-    it 'post id should be an integer' do
-      subject.post_id = 'b'
-      expect(subject).to_not be_valid
-    end
+  it 'updates a posts likes correctly' do
+    user = User.create(name: 'Tom', email: 'admin1@email.com', password: 'passowrd', posts_counter: 0)
+    user.save!
+    post = user.posts.create(title: 'Post1', text: 'This is a post', like_counter: 0, comments_counter: 0)
+    post.likes.create(author_id: user.id, post_id: post.id)
+    expect(post.like_counter).to eql(1)
   end
 end

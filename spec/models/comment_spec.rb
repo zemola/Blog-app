@@ -1,24 +1,23 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe Comment, type: :model do
-  describe 'Validations' do
-    subject { Comment.new(text: 'This is test case', author_id: 5, post_id: 3) }
+  describe 'Comment model' do
+    user = User.new(name: 'Tom', email: 'admin1@email.com', password: 'passowrd', photo: 'Tom.png', bio: 'bio',
+                    posts_counter: 0)
+    user.save!
+    post = Post.new(title: 'New post', text: 'Good evening', author: user, like_counter: 0, comments_counter: 0)
+    post.save!
 
-    before { subject.save }
+    comment_creator = User.new(name: 'Jerry', email: 'admin3@email.com', password: 'passowrd', photo: 'Tom.png',
+                               bio: 'bio', posts_counter: 0)
+    comment_creator.save!
+    post.comments.create!(text: 'Hello World', author: comment_creator)
+    post.comments.create!(text: 'This is my second post', author: comment_creator)
 
-    it 'title should not be valid' do
-      subject.text = nil
-      expect(subject).to_not be_valid
-    end
-
-    it 'author id should be a number' do
-      subject.author_id = 'a'
-      expect(subject).to_not be_valid
-    end
-
-    it 'post id should be a number' do
-      subject.post_id = 'look'
-      expect(subject).to_not be_valid
+    it 'add some comments' do
+      expect(post.comments.length).to eql(2)
     end
   end
 end

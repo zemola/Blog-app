@@ -1,34 +1,41 @@
+# frozen_string_literal: true
+
 class CommentsController < ApplicationController
+  # load_and_authorize_resource
+
+  def new
+    @comment = Comment.new
+  end
+
   def create
     @post = Post.find(params[:post_id])
-    @comment = @post.comments.create(text: comment_parameters[:text], author_id: current_user.id, post_id: @post.id)
-
-    respond_to do |format|
-      format.html do
-        if @comment.save
-          redirect_to user_post_path(@post.author.id, @post.id), notice: 'Comment created successfully'
-        else
-          redirect_to user_post_path(@post.author.id, @post.id), alert: 'Comment not created, try again!'
-        end
-      end
+    @new_comment = current_user.comments.new(
+      text: comment_params,
+      author_id: current_user.id,
+      post_id: @post.id
+    )
+    @new_comment.post_id = @post.id
+    if @new_comment.save
+      redirect_to "/users/#{@post.author_id}/posts/#{@post.id}", flash: { alert: 'Your comment is saved' }
+    else
+      flash.now[:error] = 'Could not save comment'
+      render action: 'new'
     end
   end
 
   def destroy
-    previous_url = request.env['HTTP_REFERER']
-    comment_to_delete = Comment.find(params[:id])
-
-    if comment_to_delete.destroy
-      flash[:notice] = 'Comment Deleted successfully!'
-    else
-      flash[:alert] = 'Unable to delete comment Try again later'
-    end
-    redirect_to(previous_url)
+    @comment = Comment.find(params[:comment_id])
+    post = Post.find_by(id: @comment.post_id)
+    post.comments_counter -= 1
+    @comment.destroy!
+    post.save
+    flash[:success] = 'You have deleted this comment!'
+    redirect_to user_post_path(post.author_id, post.id)
   end
 
   private
 
-  def comment_parameters
-    params.require(:comment).permit(:text)
+  def comment_params
+    params.require(:comment).permit(:text)[:text]
   end
 end

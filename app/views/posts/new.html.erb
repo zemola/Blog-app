@@ -1,9 +1,10 @@
-<ul class="nav justify-content-center bg-light text-white">
-  <li class="nav-item">
-    <%= link_to "Back", :back, class: "nav-link" %>
-  </li>
-</ul>
-<h3 class="fs-2 p-3 container mt-2 p-2 bio"> Create Your Post</h3>
-<div>
-  <%= render "post_form" %>
+<div class="create-post-c">
+<h2>Create a post</h2>
+
+<%= form_with model: @post, url: user_posts_path, scope: :post, html: {class: "post-form-c"} do |form| %>  
+      <%= form.text_field :title, placeholder: "Title", required: true, class: "post-title-c" %>
+      <%= form.text_area :text, placeholder: "Type here...", rows: 20, required: true,  class: "post-text-c" %>
+  <%= form.submit "Post", class: "submit-btn" %>
+<% end %> 
+
 </div>

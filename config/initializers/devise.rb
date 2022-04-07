@@ -9,16 +9,13 @@
 # Use this hook to configure devise mailer, warden hooks and so forth.
 # Many of these configuration options can be set straight in your model.
 Devise.setup do |config|
-  config.jwt do |jwt|
-    jwt.secret = '10f94de68be053de7362db7d1bb5dba85ba456970f2c7fe58986b5f78c123d7ca4a4056d74bc79fa1e51c1910c1c118e3fc539f289bc11dc82a110571c915840'
-  end
   # The secret key used by Devise. Devise uses this key to generate
   # random tokens. Changing this key will render invalid all existing
   # confirmation, reset password and unlock tokens in the database.
   # Devise will use the `secret_key_base` as its `secret_key`
   # by default. You can change it below and use your own secret key.
-  # config.secret_key = '1baaf9a86bd10b4e722cec158e0f125b54130974408e6ddc98c00c41716b6d2694003911a8326f021de3564582786aaecbc683d77604cc551e276c6de02e326a'
-  
+  # config.secret_key = '5d9609aeb4a1627e3df06d346568140742993a0fa3eb2b8b8587fe61039112324a81eebb11e79f7f84bb71a1f283b928ec6c2818e922f4e31f777c023737222c'
+
   # ==> Controller configuration
   # Configure the parent class to the devise controllers.
   # config.parent_controller = 'DeviseController'
@@ -129,7 +126,7 @@ Devise.setup do |config|
   config.stretches = Rails.env.test? ? 1 : 12
 
   # Set up a pepper to generate the hashed password.
-  # config.pepper = '4aaca2819ef41383475e1ab774b8b23da49d38626ef035cdd094008a2f75eb45fb99efcf5b587f1b178ce75e175cbb24d84110169c1b3f7fc6a4ed359c0a7484'
+  # config.pepper = '417b5d79d504330c69b4f0b99c6e6ac2b2529043217e0d76a5795e3a69231321e6311e0b8e074101325e18e99639ead00162c425d09222d7e870837da9c744cb'
 
   # Send a notification to the original email when the user's email is changed.
   # config.send_email_changed_notification = false
@@ -269,7 +266,7 @@ Devise.setup do |config|
   # config.navigational_formats = ['*/*', :html]
 
   # The default HTTP method used to sign out a resource. Default is :delete.
-  config.sign_out_via = :delete
+  config.sign_out_via = :get
 
   # ==> OmniAuth
   # Add a new OmniAuth provider. Check the wiki for more information on setting

@@ -1,24 +1,15 @@
 Rails.application.routes.draw do
   devise_for :users
-  root "users#index"
+  root 'users#index'
+  # get 'users/745', to: 'users#show'
+  # get 'users/745/posts', to: 'posts#index'
+  # get 'users/745/posts/3', to: 'posts#show'
 
-  resources :users, only: %i[index show] do 
-    resources :posts, only: %i[index new create show destroy]
-  end
-
-  resources :posts do
-    resources :comments, only: %i[create destroy]
-    resources :likes, only: %i[create]
-  end
-
-  resources :comments, only: %i[destroy]
-  resources :likes, only: %i[destroy]
-
-  namespace :api, defaults: { format: :json } do
-    namespace :v1 do
-      resources :posts, only: %i[index] do
-        resources :comments, only: %i[index create]
+  resources :users, only: [:show, :index] do
+    resources :posts, only: [:show, :index, :create, :new, :destroy] do
+      resources :comments, only: [:create, :new, :destroy]
+      resources :likes, only: [:create]
       end
-    end
-  end
+   end
+
 end

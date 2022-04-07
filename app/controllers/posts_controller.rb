@@ -1,42 +1,44 @@
+# frozen_string_literal: true
+
 class PostsController < ApplicationController
   load_and_authorize_resource
 
-  skip_authorize_resource only: [:all_posts]
-
   def index
-    @user = User.includes(:posts).find(params[:user_id])
+    @user = User.find(params[:user_id])
+    @posts = @user.posts.includes(:comments)
   end
 
   def show
-    @user = @user = User.find(params[:user_id])
-    @post = @user.posts.includes(:comments, :likes).find(params[:id])
+    @post = Post.find(params[:id])
+    @user = @post.author
+    @comments = @post.comments
   end
 
   def new
-    @current = current_user
+    @post = Post.new
   end
 
   def create
-    new_post = current_user.posts.build(post_params)
-
+    @new_post = current_user.posts.new(post_params)
     respond_to do |format|
       format.html do
-        if new_post.save
-          redirect_to user_post_path(new_post.author_id, new_post.id), notice: 'Post created successfully'
+        if @new_post.save
+          redirect_to "/users/#{@new_post.author.id}/posts/", flash: { alert: 'Your post is saved' }
         else
-          render :new, alert: 'Post not created. Please try again!'
+          redirect_to "/users/#{@new_post.author.id}/posts/new", flash: { alert: 'Could not save post' }
         end
       end
     end
   end
 
   def destroy
-    @user = current_user
-    @post = @user.posts.find(params[:id])
-    @post.comments.destroy_all
-    @post.likes.destroy_all
-    @post.destroy
-    redirect_to user_posts_path(@user.id), notice: 'Post deleted'
+    @post = Post.find(params[:id])
+    user = User.find(params[:user_id])
+    user.posts_counter -= 1
+    @post.destroy!
+    user.save
+    flash[:success] = 'You have deleted this post!'
+    redirect_to user_posts_path(user.id)
   end
 
   private

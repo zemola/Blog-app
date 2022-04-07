@@ -1,49 +1,45 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
-RSpec.describe Post, type: :model do
-  describe 'validations' do
-    user = User.create(name: 'Anna', bio: 'Hello! My name is Juliana.', posts_counter: 0)
-    subject do
-      Post.new(title: 'This is first post', text: 'Hello! My name is Juliana.', author: user, comments_counter: 2,
-               likes_counter: 2)
-    end
-
+RSpec.describe User, type: :model do
+  describe 'Post model' do
+    user = User.create(name: 'Ranjeet', bio: 'This is bio')
+    subject { Post.new(title: 'post title', text: 'post text', author_id: user) }
     before { subject.save }
 
-    it 'title should be present' do
+    it 'check the title is not blank' do
       subject.title = nil
       expect(subject).to_not be_valid
     end
 
-    it 'title should not be greater than 250 characters' do
-      subject.title = 'Hello'
-      expect(subject).to be_valid
-    end
-
-    it 'comments counter should be integer' do
-      subject.comments_counter = 2
-      expect(subject).to be_valid
-    end
-
-    it 'comments counter should be greater than or equal to 0' do
-      subject.comments_counter = -1
+    it 'check if the title is not exceeding 250 characters' do
+      subject.title = 'Hello world Hello world Hello world Hello world Hello world Hello world Hello world Hello world
+      Hello world Hello world Hello world Hello world Hello world Hello world Hello world Hello world Hello world Hello
+      world Hello world Hello world Hello world Hello world Hello world Hello world Hello world Hello world Hello world'
       expect(subject).to_not be_valid
     end
 
-    it 'likes counter should be greater than or equal to 0' do
-      subject.likes_counter = -1
+    it 'check if comments counter is numeric' do
+      subject.comments_counter = 'not-numeric'
       expect(subject).to_not be_valid
     end
 
-    it 'likes counter should be integer' do
-      subject.likes_counter = 2.2
+    it 'check if likes counter is numeric' do
+      subject.like_counter = 'not-numeric'
       expect(subject).to_not be_valid
     end
 
-    describe 'should test methods in post model' do
-      it 'post should have five recent comments' do
-        expect(subject.recent_comments).to eq(subject.comments.last(5))
-      end
+    it 'check if likes counter is equal or greater than zero' do
+      expect(subject.like_counter).to be >= 0
+    end
+
+    it 'check if comments counter is equal or greater than zero' do
+      expect(subject.comments_counter).to be >= 0
+    end
+
+    it 'loads only the recent 5 comments' do
+      expect(subject.recent_comments).to eq(subject.comments.last(5))
     end
   end
 end
