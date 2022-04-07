@@ -1,21 +1,15 @@
 Rails.application.routes.draw do
   devise_for :users
-  # get 'user/:user_id/posts' => 'posts#index', as: 'user_posts'
-  # get 'users/:user_id/posts/:id' => 'posts#show', as: 'user_post'
-  # get 'users' => 'users#index', as: 'users'
-  # get 'users/:id' => 'users#show', as: 'user'
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-  
   root 'users#index'
-  resources :users, only: %i[index show] do
-    resources :posts, only: %i[index show new create]
-  end
+  # get 'users/745', to: 'users#show'
+  # get 'users/745/posts', to: 'posts#index'
+  # get 'users/745/posts/3', to: 'posts#show'
 
-  resources :posts do
-    resources :comments, only: %i[create new]
-    resources :likes, only: [:create]
-  end
+  resources :users, only: [:show, :index] do
+    resources :posts, only: [:show, :index, :create, :new, :destroy] do
+      resources :comments, only: [:create, :new, :destroy]
+      resources :likes, only: [:create]
+      end
+   end
 
-  # Defines the root path route ("/")
-  # root "articles#index"
 end

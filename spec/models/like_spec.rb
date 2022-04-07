@@ -1,15 +1,20 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe Like, type: :model do
-  subject do
-    @user = User.new(name: 'Jack', photo: 'Tom.png', bio: 'bio')
-    Post.new(title: 'RoR', text: 'Hello', likes_counter: 1, author: @user, id: 4)
+  it 'tests that Like model is created correctly' do
+    like = Like.new
+    like.build_author(name: 'Ranjeet')
+    like.build_post(text: '')
+    expect(like).to be_valid
   end
 
-  before { subject.save }
-
-  it 'should return the number of likes' do
-    subject.likes.new(author: @user, post: subject)
-    expect(subject.likes_counter).to eql 1
+  it 'updates a posts likes correctly' do
+    user = User.create(name: 'Tom', email: 'admin1@email.com', password: 'passowrd', posts_counter: 0)
+    user.save!
+    post = user.posts.create(title: 'Post1', text: 'This is a post', like_counter: 0, comments_counter: 0)
+    post.likes.create(author_id: user.id, post_id: post.id)
+    expect(post.like_counter).to eql(1)
   end
 end

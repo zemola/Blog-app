@@ -1,4 +1,8 @@
+# frozen_string_literal: true
+
 class PostsController < ApplicationController
+  load_and_authorize_resource
+
   def index
     @user = User.find(params[:user_id])
     @posts = @user.posts.includes(:comments)
@@ -12,24 +16,32 @@ class PostsController < ApplicationController
 
   def new
     @post = Post.new
-    render :new, locals: { post: @post }
   end
 
   def create
-    @user = User.find(params[:user_id])
-    @new_post = @user.posts.new(post_params)
-    @new_post.likes_counter = 0
-    @new_post.comment_counter = 0
+    @new_post = current_user.posts.new(post_params)
     respond_to do |format|
       format.html do
         if @new_post.save
-          redirect_to "/users/#{@new_post.author.id}/posts/", notice: 'Created Successfully'
+          redirect_to "/users/#{@new_post.author.id}/posts/", flash: { alert: 'Your post is saved' }
         else
-          render :new, alert: 'Failed to Create!'
+          redirect_to "/users/#{@new_post.author.id}/posts/new", flash: { alert: 'Could not save post' }
         end
       end
     end
   end
+
+  def destroy
+    @post = Post.find(params[:id])
+    user = User.find(params[:user_id])
+    user.posts_counter -= 1
+    @post.destroy!
+    user.save
+    flash[:success] = 'You have deleted this post!'
+    redirect_to user_posts_path(user.id)
+  end
+
+  private
 
   def post_params
     params.require(:post).permit(:title, :text)
