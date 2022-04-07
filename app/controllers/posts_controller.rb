@@ -1,35 +1,45 @@
 class PostsController < ApplicationController
+  load_and_authorize_resource
+
+  skip_authorize_resource only: [:all_posts]
+
   def index
-    @user = User.find(params[:user_id])
-    @posts = @user.posts.includes(:comments)
+    @user = User.includes(:posts).find(params[:user_id])
   end
 
   def show
-    @post = Post.find(params[:id])
-    @user = @post.author
-    @comments = @post.comments
+    @user = @user = User.find(params[:user_id])
+    @post = @user.posts.includes(:comments, :likes).find(params[:id])
   end
 
   def new
-    @post = Post.new
-    render :new, locals: { post: @post }
+    @current = current_user
   end
 
   def create
-    @user = User.find(params[:user_id])
-    @new_post = @user.posts.new(post_params)
-    @new_post.likes_counter = 0
-    @new_post.comment_counter = 0
+    new_post = current_user.posts.build(post_params)
+
     respond_to do |format|
       format.html do
-        if @new_post.save
-          redirect_to "/users/#{@new_post.author.id}/posts/", notice: 'Created Successfully'
+        if new_post.save
+          redirect_to user_post_path(new_post.author_id, new_post.id), notice: 'Post created successfully'
         else
-          render :new, alert: 'Failed to Create!'
+          render :new, alert: 'Post not created. Please try again!'
         end
       end
     end
   end
+
+  def destroy
+    @user = current_user
+    @post = @user.posts.find(params[:id])
+    @post.comments.destroy_all
+    @post.likes.destroy_all
+    @post.destroy
+    redirect_to user_posts_path(@user.id), notice: 'Post deleted'
+  end
+
+  private
 
   def post_params
     params.require(:post).permit(:title, :text)

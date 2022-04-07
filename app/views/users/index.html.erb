@@ -1,13 +1,19 @@
-<% @users.each do |user| %>
-    <div class="user-container">
-      <div class="user_img">
-        <%= image_tag("Tom.png", width:'150px', height:'170px') %>
-      </div>
-      <div class="user-data">
-        <%= link_to user_path(user.id) do %>
-        <h2><%= user.name%></h2>
-        <% end %>
-        <p>Number of posts: <%= user.post_ids.count %></p>
-      </div>
-    </div>
-  <%end%>
+<div>
+<ul class="nav justify-content-center bg-light text-white">
+  <li class="nav-item">
+    <%= link_to "Logout", destroy_user_session_path, method: :delete, class: 'nav-link'  %>
+  </li>
+  <li class="nav-item">
+   <%= link_to "Settings", edit_user_registration_path, class: 'nav-link' %>
+  </li>
+  <li class="nav-item">
+   <%= link_to "Profile", current_user, class: 'nav-link' %>
+  </li>
+</ul>
+  <% @users.each do |user| %>
+    <%= link_to user_path(user.id) do %>
+      <%= render partial: "user_profile", locals: {user: user} %>
+    <% end %>
+  <% end %>
+</div>
+

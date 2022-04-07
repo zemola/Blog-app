@@ -1,33 +1,37 @@
-<div class="user-container">
-    <div class="user-data">
-        <div class="user-img">
-      <%= image_tag("Tom.png", width:'150px', height:'170px') %>
-    </div>
-      <h2><%= @user.name%></h2>
-      <p>Number of posts: <%= @user.post_ids.count %></p>
-    </div>
-  </div>
-
-<% @posts.each do |post| %>
-  <div class="user-container">
-    <div class="post-data">
-     <%= link_to "#{post.title}", user_post_path(@user.id, post.id), class:"post-title" %> 
-     <h3><%= post.text%></h3>
-      <p>Number of comments: <%= post.author.comment_ids.count %> <span>Number of likes: <%= post.likes_counter %></span></p>
-    </div>
-  </div>
-  <div class="comments">
-    <% post.recent_comments.each do |comment| %>
-       <h2><%= comment.author.name%>: <%= comment.text%></h2>
-    <%end%>
-  </div>
-<%end%>
 <div>
-  <button class="button"> <%= link_to "Create a post",  new_user_post_path(@user), {:class => "button_class"} %> </button>
-</div>
-<div class="button-div">
-  <button class="button">
-    Pagination
-  </button>
-
+<ul class="nav justify-content-center bg-light text-white">
+  <li class="nav-item">
+    <%= link_to "Create Post", new_user_post_path(@user.id), class: "nav-link" %>
+  </li>
+  <li class="nav-item">
+     <%= link_to "Home", root_path,  class: "nav-link" %>
+  </li>
+</ul>
+  <%= render partial: "users/user_profile", locals: { user: @user } %>
+  <ul>
+    <% @user.posts.each do |p| %>
+      <li>
+        <div class="border border-3 border-dark container mt-5 p-2 bio">
+          <%= link_to user_post_path(@user.id, p.id), id: "user_post#{p.id}" do %>
+          <h4><%= p.title%></h4>
+          <% end %>
+          <p><%= p.text%></p>
+          <div>
+            <span>Comments: <%= p.comments.size %></span>
+            <span>Likes: <%= p.comments.size %></span>
+          </div>
+        </div>
+        <div>
+        <% unless p.comments.empty? %>
+          <ul class="border border-3 border-dark container p-2 mt-1 bio">
+            <% p.recent_comments.each do |c| %>
+            <li><%= c.author.name %>: <%= c.text%></li>
+            <% end %>
+          </ul>
+        <% end %>
+        </div>
+      </li>
+    <% end %>
+  </ul>
+  <button class="btn btn-primary d-flex justify-content-center align-self-center my-5 button display">Pagination</button>
 </div>

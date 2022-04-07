@@ -1,22 +1,21 @@
-<div class="user-container">
-<div class="user-data"> 
-  <h2>#<%= @post.title %> by <span><%= @post.author.name %></span></h2>
-  <h3 class = "post-comment">Comment <%= @post.author.comment_ids.count%>,  <span>Likes <%= @post.likes_counter%></span></h3>
-  <p><%= @post.text %></p>
-</div>
-
-<%= form_with url: "/posts/#{@post.id}/likes", scope: :like do |form| %>
-    <%= form.submit "Like ", class: "post-like-btns"%>
-  <% end %>
-
-</div>
+<nav class="fs-6 p-3 container mt-2 p-2 bio">
+  <%= link_to "Home", root_path %>
+</nav>
 <div>
-<div class="comments">
-<% @comments.each do |comment| %>
-   <h2><%= comment.author.name%>: <%= comment.text%></h2>
-<%end%>
-</div>
-<div>
-    <%= render partial: "create_comments", local: { post: @post } %>
+  <div>
+    <div class="border border-3 border-dark container p-2 my-5 bio">
+      <div class="d-flex justify-content-between my-3">
+        <h4><%= @post.title %> by <%= @user.name %></h4>
+        <p>Comments : <%= @post.comments.size%> Likes : <%= @post.likes.size %> </p>
+        
+      </div>
+      <p><%= @post.text %> </p>
+      <% if can? :destroy, @post %>
+      <%= link_to "Delete", user_post_path(@user.id, @post.id), method: :delete, data: {disable_with: "Deleting..."}, class: "btn btn-danger mb-3"%>
+      <% end %>
+    </div>
+    
+    <%= render "layouts/coomcard" %>
+    <%= render "comments/comment_form" %>
   </div>
 </div>
